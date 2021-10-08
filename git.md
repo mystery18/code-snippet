@@ -699,11 +699,11 @@ pwd
 git clone xxx
 cd hd
 git branch
-git branch -a
+git branch -a # 看到远程的分支，和本地当前的分支
 
 git pull origin ask:ask # 请求远程，把ask分支弄到本地的ask里面
 git branch -a # 此时当前就有 ask分支了
-git checkout ask
+git checkout ask # 切换到ask分支
 git branch
 ls # 我已经把其他同事的代码弄到本地了
 
