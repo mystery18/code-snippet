@@ -61,9 +61,9 @@ Vue 中最核心的两个功能分别是数据驱动和组件化，使用基于�
   }
   </script>
   ```
+
   
-  
-  
+
 - 子组件给父组件传值：通过自定义事件给父组件传值，通过自定义事件可以把数据传递给父组件，第二个参数就是值！！
 
   ```vue
@@ -89,7 +89,7 @@ Vue 中最核心的两个功能分别是数据驱动和组件化，使用基于�
   ```
 
   $event 是这个组件内部触发事件的时候，传递过来的。
-  
+
   ```vue
   <template>
   	<div>
@@ -126,7 +126,7 @@ Vue 中最核心的两个功能分别是数据驱动和组件化，使用基于�
   
 
   - 不相关组件之间传值：需要用到 eventchange，就是创建一个公共的 Vue 实例，这个 Vue 实例的作用是作为事件总线或者事件中心。
-  
+
   ```vue
   <template>
   	<div>
@@ -165,7 +165,7 @@ Vue 中最核心的两个功能分别是数据驱动和组件化，使用基于�
   }
   </script>
   ```
-  
+
   ```vue
   <template>
   	<div>
@@ -189,7 +189,7 @@ Vue 中最核心的两个功能分别是数据驱动和组件化，使用基于�
   }
   </script>
   ```
-  
+
   
 
 ### 其他常见的方式
@@ -339,14 +339,7 @@ export default new Vuex.Store({
 ```
 
 ```js
-// 在 main.js 中
-import store from './store'
-
-new Vue({
-  router,
-  store, // store注入到Vue实例中
-  render: h => h(App)
-}).$mount('#app')
+// 在 main.js 中import store from './store'new Vue({  router,  store, // store注入到Vue实例中  render: h => h(App)}).$mount('#app')
 ```
 
 
@@ -381,7 +374,7 @@ export default new Vuex.Store({
 })
 ```
 
-如果数据多，总会出现重复的 $store.state，用计算属性简化模板中的代码。mapState 会返回一个对象，包含两个计算属性对应的方法，当前的计算属性是 count 和 msg，这个计算属性的形式是 `count: state => state.count`，这里我们需要使用扩展运算符... 展开返回对象的成员给 computed。搞定之后我们就有 count 和 msg 两个计算属性。
+****如果数据多，总会出现重复的 $store.state，用计算属性简化模板中的代码。mapState 会返回一个对象，包含两个计算属性对应的方法，当前的计算属性是 count 和 msg，这个计算属性的形式是 `count: state => state.count`，这里我们需要使用扩展运算符... 展开返回对象的成员给 computed。搞定之后我们就有 count 和 msg 两个计算属性。
 
 使用这种方式的话可以让视图中的代码更简洁，但是还有个问题就是，如果当前组件中已经有 msg 和 count 两个属性，此时再使用这种方式的话就会有冲突，怎么解决呢？
 
@@ -392,8 +385,10 @@ mapState 除了可以传数组，也可以传对象，传对象的话可以去�
 	<div>
         count: {{ $store.state.count }} <br/>
         msg: {{ $store.state.msg }} <br/>
-        <!-- count: {{ count }} <br/> -->
-        <!-- count: msg: {{ msg }} <br/> -->
+        <!-- 1 -->
+        count: {{ count }} <br/>
+        msg: {{ msg }} <br/>
+        <!-- 2 -->
         count: {{ num }} <br/>
         msg: {{ message }} <br/>
         
@@ -403,17 +398,17 @@ mapState 除了可以传数组，也可以传对象，传对象的话可以去�
 import { mapState } from 'vuex'
 export default {
     computed: {
-        mapState(['count', 'msg']){
-            // count: state => state.count
-            // ...mapState(['count', 'msg'])
-            ...mapState({ num: 'count', message: 'msg' })
-        }
+        // 1
+        // count: state => state.count
+        ...mapState(['count', 'msg'])
+        // 2
+        ...mapState({ num: 'count', message: 'msg' }) // 生成的计算属性的名称分别是：num 和 message
     }
 }
 </script>
 ```
 
-未来在视图中使用 state 时候可以直接使用 mapState 的方式来简化视图中的调用。我发现后面用这种映射关系都没有改名。
+未来在视图中使用 state 时候可以直接使用 mapState 的方式来简化视图中的调用。(我发现后面用这种映射关系都没有改名)
 
 
 
@@ -423,7 +418,7 @@ export default {
 
 ### Getter
 
-类似于组件中的计算属性，如果**<u>想要对 state 中的数据做简单的处理再展示（不是触发事件之类的，就是要简单处理一下，类似于有个 function 处理过后再 return），你要用处理后的数据就去getters里拿，原来state是没变的。</u>**，我们可以使用 getter ，比如把 msg 倒序输出，或者过滤商品数据。也可以在 vuex 内部处理，因为状态本身是属于vuex的，所以也应该在内部处理，增加个 getters。
+类似于组件中的**计算属性**，如果**<u>想要对 state 中的数据做简单的处理再展示（不是触发事件之类的，就是要简单处理一下，类似于有个 function 处理过后再 return），你要用处理后的数据就去getters里拿，原来state是没变的。</u>**，我们可以使用 getter ，比如把 msg 倒序输出，或者过滤商品数据。也可以在 vuex 内部处理，因为状态本身是属于vuex的，所以也应该在内部处理，增加个 getters。
 
 ```js
 // src/store/index.js
@@ -457,30 +452,10 @@ export default new Vuex.Store({
 简化 state 的调用我们使用的是 mapState，那简化 getters 的调用可以使用 mapGetters，使用方法类似。负责把 vuex 中的 getters 映射到组件中的计算属性，mapGetters 返回的是对象，所以跟使用 mapState 的时候一样，也需要使用 ... 把它展开。一样也是可以传数组和对象两种，这里就演示数组吧，用对象可以改名。
 
 ```vue
-<template>
-	<div>
-        count: {{ num }} <br/>
-        msg: {{ message }} <br/>
-        reverseMsg: {{ $store.getters.reverseMsg }}
-        reverseMsg: {{ reverseMsg }}
-    </div>
-</template>
-<script>
-import { mapState, mapGetters } from 'vuex'
-export default {
-    computed: {
-        mapState(['count', 'msg']){
-            // count: state => state.count
-            // ...mapState(['count', 'msg'])
-            ...mapState({ num: 'count', message: 'msg' })
-            ...mapGetters(['reverseMsg']) // 用数组，因为可能还有很多的getter需要映射进来 
-        }
-    }
-}
-</script>
+<template>	<div>        count: {{ num }} <br/>        msg: {{ message }} <br/>        <h2>Getters</h2>        reverseMsg: {{ $store.getters.reverseMsg }}        reverseMsg: {{ reverseMsg }}    </div></template><script>import { mapState, mapGetters } from 'vuex'export default {    computed: {        ...mapState({ num: 'count', message: 'msg' })        ...mapGetters(['reverseMsg']) // 用数组，因为可能还有很多的getter需要映射进来     }}</script>
 ```
 
-当我们在视图中需要对状态数据做简单处理后再展示，此时可以使用计算属性。
+当我们在视图中**<u>需要对状态数据做简单处理后再展示</u>**，此时可以使用计算属性。
 
 
 
@@ -490,13 +465,14 @@ export default {
 
 ### Mutation
 
-在视图中如何**修改状态，必须通过提交 mutation ，mutation 必须是同步执行的，这样可以保证能够在 mutation 中收集到所有的状态修改**。相比于 getter，这个是改了 state里面的数据！！！ getter 没有改 state 的数据！
+在视图中如何**修改状态，必须通过提交 mutation ，mutation 必须是同步执行的，这样可以保证能够在 mutation 中收集到所有的状态修改**。<u>相比于 getter，这个是改了 state里面的数据！！！ getter 没有改 state 的数据！</u>
 
 ```js
 // src/store/index.js
 import Vue from 'vue'
 import Vuex from 'vuex'
 Vue.use(Vuex) // 注册插件
+
 export default new Vuex.Store({
     state:{
         count: 0,
@@ -524,6 +500,8 @@ export default new Vuex.Store({
 
 
 
+在模板中放一个按钮，点击按钮提交 mutation，更改 count 的值
+
 ```vue
 <template>
 	<div>
@@ -531,8 +509,9 @@ export default new Vuex.Store({
         msg: {{ message }} <br/>
         reverseMsg: {{ $store.getters.reverseMsg }}
         reverseMsg: {{ reverseMsg }}
-        
+        <h2>Mutation</h2>
         <button @click="$store.commit('increate', 2)">mutation</button>
+        <!-- 1、要执行的mutation方法名（事件名）2、要传递的数据 -->
         <!-- 每次点击 count 就会加2 -->
         <button @click="increate(2)">mutation</button>
         
@@ -542,19 +521,18 @@ export default new Vuex.Store({
 import { mapState, mapGetters, mapMutations } from 'vuex'
 export default {
     computed: {
-        mapState(['count', 'msg']){
-            ...mapState({ num: 'count', message: 'msg' })
-            ...mapGetters(['reverseMsg'])
-        }
+        ...mapState({ num: 'count', message: 'msg' })
+        ...mapGetters(['reverseMsg'])
     },
     methods: {
         ...mapMutations(['increate']) // 它的作用是把this.increate方法映射为$store.commit()
+        // mutation 中映射的方法
     }
 }
 </script>
 ```
 
-所有的状态必须要通过 mutation，这么做的目的是可以在 devtools 中方便调试。需要注意：不要在 mutation 中执行异步操作修改 state，否则的话调试工具无法正确观测到状态的变化。如果想要执行异步操作，需要使用 action。
+所有的状态必须要通过 mutation，这么做的目的是可以在 devtools 中方便调试。需要注意：**不要在 mutation 中执行异步操作修改 state，否则的话调试工具无法正确观测到状态的变化**。如果想要执行异步操作，需要使用 action。
 
 
 
@@ -562,7 +540,9 @@ export default {
 
 ### Action
 
-在action 中可以执行异步操作，当异步操作结束后，如果需要更改状态，需要通过提交 mutation 来修改 state ，因为所有的状态更改都要通过 mutation。
+在action 中可以执行**异步操作**，当异步操作结束后，如果需要更改状态，需要通过提交 mutation 来修改 state ，因为所有的状态更改都要通过 mutation。
+
+如果我们要异步获取商品数据的话，就需要在 action 中发送请求，异步执行完毕，获取到商品数据之后，需要再提交 mutation 把数据记录到 state 中。
 
 ```js
 // src/store/index.js
@@ -585,9 +565,9 @@ export default new Vuex.Store({
         }
     },
     actions: {
+        // action 的方法有2个参数：1、context上下文（这个对象中有我们需要的state commit getters 等成员） 2、payload
         increateAsync (context, payload){
             setTimeout(() => {
-                // context 是上下文（感觉就是操作mutation）
                 context.commit('increate', payload) // 提交mutation 更改count 的值
             }, 2000)
         }
@@ -598,9 +578,7 @@ export default new Vuex.Store({
 })
 ```
 
-注意，action 的调用要通过 dispatch，即跟 mutation 要通过 commit 调用一样。
-
-老规矩，依然是优化一下模板中的调用。
+注意，action 的调用要通过 dispatch，即跟 mutation 要通过 commit 调用一样。（调用 mutation的方法，要用 commit，调用action的方法，要用 dispatch）
 
 ```vue
 <template>
@@ -614,8 +592,10 @@ export default new Vuex.Store({
         <!-- 每次点击 count 就会加2 -->
         <button @click="increate(2)">mutation</button>
         
+        <h2>Mutation</h2>
         <button @click="$store.dispatch('increateAsync', 5)">action</button>
-        <!-- 写上action名 和每次添加多少 -->
+        <!-- dispatch 参数写上action名 和每次添加多少 -->
+        <!-- 注意action的调用，要通过dispatch。就像mutation要通过commit来调用 -->
         <button @click="increateAsync(5)">action</button>
     </div>
 </template>
@@ -781,52 +761,13 @@ export default {
 获取到数据之后，把结果存储到 state中，我们需要提交 mutation，我们直接直接调用 commit。
 
 ```js
-// products.js
-import axios from 'axios'
-const state = {
-    products: []
-}
-const getters = {}
-const mutations = {
-    setProducts (state, payload) {
-        state.products = payload
-    }
-}
-// 请求接口获取数据，异步获取数据
-const actions = {
-    // 它里面需要两个参数，第一个是context上下文，第二个是payload。
-    // 我们可以直接把context中需要的内容给它解构出来，我们这只需要commit方法
-    // 给这个方法加async，然后调用axios发生请求。我们把请求后的结果解构出来。
-    getProducts ({ commit }) {
-        const { data } = await axios({
-            method: 'GET',
-            url: 'http://127.0.0.1:3000/products'
-        })
-        commit('setProducts', data)
-    }
-}
+// products.jsimport axios from 'axios'const state = {    products: []}const getters = {}const mutations = {    setProducts (state, payload) {        state.products = payload    }}// 请求接口获取数据，异步获取数据const actions = {    // 它里面需要两个参数，第一个是context上下文，第二个是payload。    // 我们可以直接把context中需要的内容给它解构出来，我们这只需要commit方法    // 给这个方法加async，然后调用axios发生请求。我们把请求后的结果解构出来。    getProducts ({ commit }) {        const { data } = await axios({            method: 'GET',            url: 'http://127.0.0.1:3000/products'        })        commit('setProducts', data)    }}
 ```
 
 
 
 ```vue
-<!-- products.vue -->
-<script>
-import { mapState, mapActions } from 'vuex'
-export default {
-    computed: {
-        // 1、命名空间 2、我们要映射过来的属性
-        ...mapState('products', ['products'])
-    },
-    methods: {
-        ...mapActions('products', ['getProducts'])
-        // 1、命名空间 2、是我们要映射的action的名字
-    },
-    created () {
-        this.getProducts() // 当组件创建完毕后，调用getProducts发送请求，获取商品数据。
-    }
-}
-</script>
+<!-- products.vue --><script>import { mapState, mapActions } from 'vuex'export default {    computed: {        // 1、命名空间 2、我们要映射过来的属性        ...mapState('products', ['products'])    },    methods: {        ...mapActions('products', ['getProducts'])        // 1、命名空间 2、是我们要映射的action的名字    },    created () {        this.getProducts() // 当组件创建完毕后，调用getProducts发送请求，获取商品数据。    }}</script>
 ```
 
 
@@ -834,28 +775,7 @@ export default {
 再加一个案例：
 
 ```vue
-<template>
-    <div>
-        <p>mapState {{ username }}</p>
-        <p>mapGetters {{ reverseUser }}</p>
-        <button @click="changeFn('hhhhh')">mapMutations</button>
-    </div>
-</template>
-
-<script>
-import { mapState, mapGetters, mapMutations } from 'vuex'
-
-export default {
-  name: 'App',
-  computed: {
-    ...mapState(['username']),
-    ...mapGetters(['reverseUser'])
-  },
-  methods: {
-    ...mapMutations(['changeFn'])
-  }
-}
-</script>
+<template>    <div>        <p>mapState {{ username }}</p>        <p>mapGetters {{ reverseUser }}</p>        <button @click="changeFn('hhhhh')">mapMutations</button>    </div></template><script>import { mapState, mapGetters, mapMutations } from 'vuex'export default {  name: 'App',  computed: {    ...mapState(['username']),    ...mapGetters(['reverseUser'])  },  methods: {    ...mapMutations(['changeFn'])  }}</script>
 ```
 
 
@@ -872,20 +792,11 @@ export default {
 Vuex 插件的使用
 
 ```js
-const myPlugin = store => {
-    // 当 store 初始化后调用
-    store.subscribe((mutation, state) => {
-        // 每次mutation之后调用
-        // mutation 的格式为 { type, payload }
-    })
-}
+const myPlugin = store => {    // 当 store 初始化后调用    store.subscribe((mutation, state) => {        // 每次mutation之后调用        // mutation 的格式为 { type, payload }    })}
 ```
 
 ```js
-// 插件应该在创建store之前来创建
-const store = new Vuex.Store({
-    plugins: [myPlugin]
-})
+// 插件应该在创建store之前来创建const store = new Vuex.Store({    plugins: [myPlugin]})
 ```
 
 
