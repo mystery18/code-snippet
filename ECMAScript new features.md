@@ -342,7 +342,21 @@ console.log(Object.is(+0, -0)) // falseconsole.log(Object.is(NaN, NaN)) // true
 相比于Object.defineProperty()，Proxy的功能要更为强大，使用起来也更为方便。使用Proxy：
 
 ```javascript
-const person = {    name: 'zce',    age: 20 }const personProxy = new Proxy(person, {    get(target, property){        console.log(target, property)        return 100    },    set (){}})console.log(personProxy.name)// {name: 'zce', age: 20 } name// 100
+const person = {
+    name: 'zce',
+    age: 20
+}
+const personProxy = new Proxy(person, {
+    get (target, property){
+        console.log(target, property)
+        return 100
+    },
+    set (){
+    }
+})
+console.log(personProxy.name)
+// {name: 'zce', age: 20 } name
+// 100
 ```
 
 通过new Proxy的方式来为person创建一个代理对象。第一个参数就是需要代理的目标对象，第二个参数也是一个对象，可以把这个对象称之为代理的处理对象（一个叫handler的处理器对象），这个对象中可以通过get方法来监视我们属性的访问，通过set方法来去监视我们对象当中设置属性的过程。
