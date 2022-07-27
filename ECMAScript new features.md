@@ -448,7 +448,21 @@ console.log(personProxy.xxx)
 Object.defineProperty() **只能监视到对象读取和写入**，Proxy可以监视到更多的对象操作。
 
 ```js
-const person = {    name: 'zce',    age: 20 }const personProxy = new Proxy(person, {    deleteProperty (target, prop){        console.log('delete', prop)        //删除目标属性        delete target[prop]    }})delete personProxy.ageconsole.log(person)//delete age// {name: 'zce'}
+const person = {
+    name: 'zce',
+    age: 20
+}
+const personProxy = new Proxy(person, {
+    deleteProperty (target, prop){
+        console.log('delete', prop)
+        //删除目标属性
+        delete target[prop]
+    }
+})
+delete personProxy.age
+console.log(person)
+//delete age
+// {name: 'zce'}
 ```
 
 添加的这个 deleteProperty 方法，这个方法会在外部对当前这个代理对象进行 delete 操作时自动执行。参数：代理目标对象以及所要删除的这个属性名称。由上可知Object.defineProperty()这个方法做不到，当然，除此之外proxy还有其他对象操作都能被监视到。
