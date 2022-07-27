@@ -366,7 +366,18 @@ get方法接收两个参数，第一个是我们所代理的目标对象，第�
 由输出可知，我们定义的get方法它确实监听到了属性的读取，而且第二个参数（也就是我们被访问的这个name）。除此之外，我们得到的结果也确实是get方法的返回值，那这个方法内部正常的逻辑应该是，先去判断我们代理目标对象当中是否存在这样的属性，如果存在的话就返回对应的值，反之不存在的话可以返回undefined或者是一个默认值，如下：
 
 ```javascript
-const person = {    name: 'zce',    age: 20 }const personProxy = new Proxy(person, {    get(target, property){        return property in target ? target[property] : 'default'    },    set (){}})console.log(personProxy.name)console.log(personProxy.xxx)// zce// default
+const person = {
+    name: 'zce',
+    age: 20
+}
+const personProxy = new Proxy(person, {
+    get(target, property){
+        return property in target ? target[property] : 'default'
+    },
+    set (){}
+})
+console.log(personProxy.name)
+console.log(personProxy.xxx)// zce// default
 ```
 
 
@@ -376,7 +387,24 @@ set方法默认接收3个参数，分别是代理目标对象、要写入的属�
 然后尝试通过这个代理对象为我们person写入一个gender属性
 
 ```javascript
-const person = {    name: 'zce',    age: 20 }const personProxy = new Proxy(person, {    get (target, property){        return property in target ? target[property] : 'default'    },    set (target, property, value){        console.log(target, property, value)    }})//这里写入了一个新属性gender和值personProxy.gender = trueconsole.log(personProxy.name)console.log(personProxy.xxx)// {name: 'zce', age: 20 } gender true// zce// default
+const person = {
+    name: 'zce',
+    age: 20
+}
+const personProxy = new Proxy(person, {
+    get (target, property){
+        return property in target ? target[property] : 'default'
+    },
+    set (target, property, value){
+        console.log(target, property, value)
+    }
+})
+// 这里写入了一个新属性gender和值
+personProxy.gender = trueconsole.log(personProxy.name)
+console.log(personProxy.xxx)
+// {name: 'zce', age: 20 } gender true
+// zce
+// default
 ```
 
 
@@ -384,7 +412,35 @@ const person = {    name: 'zce',    age: 20 }const personProxy = new Proxy(perso
 那这个set方法内部正常的逻辑就应该是为我们的代理目标去设置指定的属性，我们可以先做一个数据校验，例如我们如果设置的是age，那么它的值就必须是一个数字，否则的话我们就报错
 
 ```javascript
-const person = {    name: 'zce',    age: 20 }const personProxy = new Proxy(person, {    //读取    get (target, property){        return property in target ? target[property] : 'default'    },    //写入或修改    set (target, property, value){        if(property == 'age'){            if(!Number.isInteger(value)){                throw new TypeError(`${value} is not an int`)            }        }        target[property] = value    }})//这里设置一个age等于字符串，就会报错personProxy.age = 'hhh'//这样就可以personProxy.age = 100personProxy.gender = trueconsole.log(personProxy.name)console.log(personProxy.xxx)// {name: 'zce', age: 20 } gender true// zce// default
+const person = {
+    name: 'zce',
+    age: 20
+}
+const personProxy = new Proxy(person, {    
+    //读取
+    get (target, property){
+        return property in target ? target[property] : 'default'
+    },
+    //写入或修改
+    set (target, property, value){
+        if(property == 'age'){
+            if(!Number.isInteger(value)){
+                throw new TypeError(`${value} is not an int`)
+            }
+        }
+        target[property] = value
+    }
+})
+//这里设置一个age等于字符串，就会报错
+personProxy.age = 'hhh'
+//这样就可以
+personProxy.age = 100person
+Proxy.gender = true
+console.log(personProxy.name)
+console.log(personProxy.xxx)
+// {name: 'zce', age: 20 } gender true
+// zce
+// default
 ```
 
 ————————————————————————————————————————————————————————————
