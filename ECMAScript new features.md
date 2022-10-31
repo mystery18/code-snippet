@@ -582,19 +582,42 @@ ES2015提供了一个叫Set的全新数据结构，可以把它理解为集合�
 可以通过这个实例的add方法来去忘集合中添加数据。由于这个add会返回这个集合本身，所以说我们可以链式调用，那如果我们在这个过程中添加了之前已经存在的值，那所添加的这个值就会忽略掉。那想要遍历集合中的数据，就可以使用集合对象的forEach方法，然后去传入一个回调函数，也可以使用ES6中所提供的for...of循环，这种循环是一种新的语法，它也可以去遍历普通的数组，它所遍历的i实际就是数组中每一个成员。
 
 ```js
-const s = new Set()s.add(1).add(2).add(3).add(4).add(2)console.log(s)// Set { 1, 2, 3, 4 }  s.forEach(i => console.log(i))for(let i of s){    console.log(i)}console.log(s.size)
+const s = new Set()
+s.add(1).add(2).add(3).add(4).add(2)
+console.log(s)
+// Set { 1, 2, 3, 4 }
+s.forEach(i => console.log(i))
+for(let i of s){
+    console.log(i)
+}
+console.log(s.size)
 ```
 
 除此之外，在Set方法还可以通过size来去获取整个集合的长度，这与数组中的length是相同的道理。常用的方法有has，用来判断集合中是否存在某一个特定的值。delete方法用来删除集合中某一个指定的值，删除成功的话将会返回一个true。clear方法可以清除当前集合的全部内容。
 
 ```js
-const s = new Set()s.add(1).add(2).add(3).add(4).add(2)console.log(s.has(100)) //falseconsole.log(s.delete(3)) //trueconsole.log(s) // Set { 1, 2, 4 }  s.clear()console.log(s) // Set {}
+const s = new Set()
+s.add(1).add(2).add(3).add(4).add(2)
+console.log(s.has(100))
+//false
+console.log(s.delete(3))
+//true
+console.log(s)
+// Set { 1, 2, 4 }
+s.clear()
+console.log(s)
+// Set {}
 ```
 
 这种Set的数据结构最常用的应该场景就是来为数组中的元素去重：
 
 ```js
-const arr = [1, 2, 1, 3, 4, 1]const result = Array.from(new Set(arr))//这里使用Array.from方法去把set再次转换为数组。const result = [...new Set(arr)]//也可以用...的方法在一个空数组中展开这个setconsole.log(result)
+const arr = [1, 2, 1, 3, 4, 1]
+const result = Array.from(new Set(arr))
+//这里使用Array.from方法去把set再次转换为数组。
+const result = [...new Set(arr)]
+//也可以用...的方法在一个空数组中展开这个set
+console.log(result)
 ```
 
 ————————————————————————————————————————————————————————————
@@ -604,7 +627,15 @@ const arr = [1, 2, 1, 3, 4, 1]const result = Array.from(new Set(arr))//这里使
 Map数据结构与对象十分类似，本质上他们都是键值对集合，但是这种对象结构中的键它只能够是字符串类型，所以我们存放一些复杂结构的数据时，会有一些问题。这里重点要看的就是键（例子中有以布尔值、数字、对象作为键）。
 
 ```js
-const obj = {}obj[true] = 'value'obj[123] = 'value'obj[{a: 1}] = 'value'//此时如果把键都打印出来，就能发现问题。先获取所有键console.log(Object.keys(obj))// ['123', 'true', '[object Object]']//打印出来之后 这些键都被转换成了字符串。即如果我们给对象添加的键不是字符串，内部就会将这个数据toString的结果作为键console.log(obj['[object Object]'])//value
+const obj = {}
+obj[true] = 'value'
+obj[123] = 'value'
+obj[{a: 1}] = 'value'
+//此时如果把键都打印出来，就能发现问题。先获取所有键console.log(Object.keys(obj))
+// ['123', 'true', '[object Object]']
+//打印出来之后 这些键都被转换成了字符串。即如果我们给对象添加的键不是字符串，内部就会将这个数据toString的结果作为键
+console.log(obj['[object Object]'])
+//value
 ```
 
 假定我们要用对象去存储每个学生的考试成绩，那如果我们用学生对象为键，不管对象当中的属性有什么不同，那每一个对象toString默认的结果都是一样的（都是那个'[object Object]'），自然也就没办法做到区分，甚至使用方括号[]也能获取到对应的值，因为我们toString的结果就是这个字符串，那这就是问题。
@@ -616,13 +647,29 @@ const obj = {}obj[true] = 'value'obj[123] = 'value'obj[{a: 1}] = 'value'//此时
 首先通过map构造函数去创建一个map实例，可以使用这个实例的set方法去存数据，那这里键就可以是任意类型的数据，也不用担心它转换成字符串。如果要获取其中的数据，我们也可以使用get方法。除此之外也可以用has方法去判断某一个键是否存在，delete方法去删除某个键，clear方法去清空所有的键值。
 
 ```js
-const m = new Map()const tom = { name: 'tom'}m.set(tom, 90)console.log(m)// Map(1) { { name: 'tom' } => 90 }console.log(m.get(tom))// 90//m.has()//m.delete()//m.clear()
+const m = new Map()
+const tom = {
+    name: 'tom'
+}
+m.set(tom, 90)
+console.log(m)
+// Map(1) { { name: 'tom' } => 90 }
+console.log(m.get(tom))
+// 90
+//m.has()
+//m.delete()
+//m.clear()
 ```
 
 如果需要获取所有的键值，可以使用实例对象的forEach方法，在这个方法的回调函数中，第一个参数就是我们被遍历的值，第二个参数就是被遍历的键，可以分别打印出来。
 
 ```js
-const m = new Map()const tom = { name: 'tom'}m.set(tom, 90)m.forEach((value, key) =>{    console.log(value, key)})
+const m = new Map()
+const tom = { name: 'tom'}
+m.set(tom, 90)
+m.forEach((value, key) => {
+    console.log(value, key)
+})
 ```
 
 那 map 数据结构最大的特点就是它可以**用任意类型的数据作为键**，而**对象实际上只能使用字符串作为键**。
@@ -636,7 +683,10 @@ const m = new Map()const tom = { name: 'tom'}m.set(tom, 90)m.forEach((value, key
 在ES6之前，对象的属性名都是字符串，而字符串是**有可能会重复的**，那如果重复的话就会产生冲突。例如我们定义一个用于存放数据缓存的对象，我们约定这个对象是全局共享的，这里为了更直观的展示，这里用注释去区分。
 
 ```js
-const cache = {}cache['foo'] = Math.random()cache['foo'] = '123'console.log(cache)
+const cache = {}
+cache['foo'] = Math.random()
+cache['foo'] = '123'
+console.log(cache)
 ```
 
 如果我们不知道cache对象之前就已经存在一个foo的键，也去使用foo作为键去存放另外一个数据，此时就会产生冲突。ES2015为了解决这个问题，它提供了一种全新的原始数据类型symbol，它的作用就是**表示一个独一无二的值**。
@@ -646,7 +696,15 @@ const cache = {}cache['foo'] = Math.random()cache['foo'] = '123'console.log(cach
 通过 symbol 函数去创建 symbol 类型的数据，而且这种数据 typeof 的结果是symbol，也就表示它确实是一个全新的类型。这种类型最大的特点就是独一无二，也就是说，我们通过 symbol 函数创建的每一个值都是唯一不重复。
 
 ```js
-const s = Symbol()console.log(s) // Symbol()console.log(typeof s) // symbolconsole.log(	Symbol() == Symbol() //false	Symbol('foo') == Symbol('foo') //false)
+const s = Symbol()
+console.log(s)
+// Symbol()
+console.log(typeof s)
+// symbol
+console.log(Symbol() == Symbol())
+//false
+Symbol('foo') == Symbol('foo')
+//false
 ```
 
 
@@ -654,19 +712,32 @@ const s = Symbol()console.log(s) // Symbol()console.log(typeof s) // symbolconso
 考虑到开发过程中的调试，symbol 函数**允许我们传入一个字符串作为这个值的描述文本**，那对于我们多次使用symbol的话就可以在控制台中去区分到底哪一个对应的symbol。自ES2015开始，对象可以直接去使用 symbol 类型的值作为属性名，即我们对象的属性名可以是两种类型，分别是string和symbol。
 
 ```js
-console.log(Symbol('foo')) //Symbol(foo)console.log(Symbol('bar')) //Symbol(bar)console.log(Symbol('baz')) //Symbol(baz)
+console.log(Symbol('foo'))
+//Symbol(foo)
+console.log(Symbol('bar'))
+//Symbol(bar)
+console.log(Symbol('baz'))
+//Symbol(baz)
 ```
 
 创建一个对象，使用symbol值去作为键，为对象去添加两个成员。由于symbol的值都是独一无二的，就不用去担心可能会产生冲突的问题了。
 
 ```js
-const obj = {}obj[Symbol()] = '123'obj[Symbol()] = '456'console.log(obj)// { [Symbol()]: '123', [Symbol()]: '456' }
+const obj = {}
+obj[Symbol()] = '123'
+obj[Symbol()] = '456'
+console.log(obj)
+// { [Symbol()]: '123', [Symbol()]: '456' }
 ```
 
 这里我们也可以用计算属性名的方式直接在对象字面量中去使用symbol作为属性名，结果也是相同的。
 
 ```js
-const obj = {    [Symbol()]: 123}console.log(obj)// { [Symbol()]: 123 }
+const obj = {
+    [Symbol()]: 123
+}
+console.log(obj)
+// { [Symbol()]: 123 }
 ```
 
 
@@ -676,7 +747,15 @@ const obj = {    [Symbol()]: 123}console.log(obj)// { [Symbol()]: 123 }
 那现在有了symbol之后，我们就可以使用symbol来去创建私有成员的属性名了，在这个对象的内部，我们可以使用创建属性时的symbol去拿到对应的属性成员。而在外部文件中，因为我们没有办法再去创建一个完全相同的symbol，所以我们就不能直接访问到这个成员，只能去调用这个对象中普通名称的成员，那这样就实现了所谓的私有成员。
 
 ```js
-// a.jsconst name = Symbol()const person = {    [name]: 'zce',    say(){        console.log(this[name])    }}// b.jsperson.say()
+// a.js
+const name = Symbol()
+const person = {
+    [name]: 'zce',
+    say(){
+        console.log(this[name])
+    }
+}
+// b.jsperson.say()
 ```
 
 这种类型的值目前最主要的作用就是为对象去添加独一无二的属性标识符，截止到ES2019标准，ECMAScript一共定义了6种原始数据类型+Object数据类型，共7种数据类型。未来还会新增一个BigInt的数据类型，用于去更长的数字，只不过目前这个类型还处在stage-4阶段，预计在下一个版本就能正式被标准化，到时候就一共8种数据类型了。
@@ -684,7 +763,13 @@ const obj = {    [Symbol()]: 123}console.log(obj)// { [Symbol()]: 123 }
 
 
 ```js
-// 没有参数的情况let s1 = Symbol();let s2 = Symbol();s1 === s2 // false// 有参数的情况let s1 = Symbol('foo');let s2 = Symbol('foo');s1 === s2 // false
+// 没有参数的情况let s1 = Symbol();let s2 = Symbol();s1 === s2
+// false
+// 有参数的情况
+let s1 = Symbol('foo');
+let s2 = Symbol('foo');
+s1 === s2
+// false
 ```
 
 每次通过symbol函数去创建的值，一定是唯一的值，不管我们传入的描述文本是不是相同的，每次去调用symbol函数它得到的结果都是全新的一个值。如果我们要在全局复用一个相同的symbol值，可以使用全局变量的方式去实现，或使用symbol类型提供的静态方法去实现。就是symbol里面的for方法，这个方法可以接收一个字符串为参数，那相同的字符串就一定会返回相同symbol类型的值，这个方法内部维护了全局的注册表，为我们的字符串和symbol值提供了一个一一对应的关系。
@@ -692,7 +777,12 @@ const obj = {    [Symbol()]: 123}console.log(obj)// { [Symbol()]: 123 }
 需要注意的是在这个方法内部维护的是字符串和symbol之间的对应关系。也就是说，如果我们传入的不是字符串，那这个方法内部就会把它自动转换成字符串，这样就会导致我们传入布尔值的true和我们传入字符串的true结果拿到的都是一样的。
 
 ```js
-const s1 = Symbol.for('foo')const s2 = Symbol.for('foo')console.log(s1 == s2) //trueconsole.log(	Symbol.for(true) == Symbol.for('true'))//true
+const s1 = Symbol.for('foo')
+const s2 = Symbol.for('foo')
+console.log(s1 == s2)
+//true
+console.log(Symbol.for(true) == Symbol.for('true'))
+//true
 ```
 
 而且在symbol类型中，提供了很多内置的symbol常量，用来作为内部方法的标识，这些标识符可以让自定义对象去实现一些js当中内置的接口。例如我们定义一个obj对象，调用这个对象的toString方法，结果默认就是[object Object]，我们这种字符串叫做对象的toString标签。
@@ -700,7 +790,9 @@ const s1 = Symbol.for('foo')const s2 = Symbol.for('foo')console.log(s1 == s2) //
 如果我们要自定义这个对象的toString标签，就可以在这个对象中去添加一个特定的成员去标识，考虑到如果使用字符串去添加这种标识符，就有可能会跟内部的一些成员产生重复，所以ECMAScript要求我们使用Symbol值去实现这样的一个接口。
 
 ```js
-const obj = {}console.log(obj.toString()) //[object Object]
+const obj = {}
+console.log(obj.toString())
+//[object Object]
 ```
 
 在我们对象中添加一个Symbol.toStringTag属性，让他等于XObject，此时toString标签就是我们自定义的Xobject。这里的toStringTag就是Symbol内置的常量，这种symbol后面为对象去实现迭代器时会经常用到。
@@ -724,13 +816,35 @@ const obj = {    [Symbol()]: 'symbol value',    foo: 'normal value'}for (var key
 for循环比较适合去遍历普通的数组，for...in循环比较适合去遍历键值对，再有就是一些函数式的遍历方法，如数组对象的forEach方法。这些各种各样遍历数据的方式都有一定的局限性，所以ES2015借鉴了很多其他的语言，引入了一种全新的遍历方式，叫for...of循环，这种遍历方式以后会作为遍历所有数据结构的统一方式，即 只要明白for..of内部工作的原理，就可以使用这种循环去遍历任何一种自定义的数据结构。
 
 ```js
-//基本用法const arr = [100, 200, 300, 400]for(const item of arr){    console.log(item)}arr.forEach(item => {    console.log(item)})//都是//100//200//300//400
+//基本用法
+const arr = [100, 200, 300, 400]
+for(const item of arr){
+    console.log(item)
+}
+arr.forEach(item => {
+    console.log(item)
+})
+//都是
+//100
+//200
+//300
+//400
 ```
 
 不同于传统的for..in循环，for..of循环拿到的就是数组中的每一个元素，而不是对应的下标。这种循环方式就可以取代数组实例当中的forEach方法，而且相比于forEach方法，for...of循环它可以使用break关键字随时去终止循环，而forEach方法是无法去终止遍历的。在以前我们为了随时可以终止遍历，必须要去使用数组实例的some或者every方法，在some方法的回调函数中返回true，在every方法的回调函数中返回false，都可以用来终止遍历，而在forEach方法中无论返回true/false都无法终止遍历。而在for..of直接使用break关键字去随时终止循环。
 
 ```js
-const arr = [100, 200, 300, 400]for(const item of arr){    console.log(item)    if(item > 100){        break    }}//100//200arr.forEach() // 不能跳出循环
+const arr = [100, 200, 300, 400]
+for(const item of arr){
+    console.log(item)
+    if(item > 100){
+        break    
+    }
+}
+//100
+//200
+arr.forEach()
+// 不能跳出循环
 ```
 
 此外，伪数组对象也是可以直接用for...of循环中遍历，如在函数中的arguments对象，或者是在dom操作时一些元素节点的列表，跟普通数组的遍历没有区别。
@@ -740,13 +854,30 @@ const arr = [100, 200, 300, 400]for(const item of arr){    console.log(item)    
 在ES2015新增的set和map对象，遍历set和遍历数组也没有什么区别，它每次迭代拿到的就是当前元素本身。
 
 ```js
-const s = new Set(['foo', 'bar'])for(const item of s){    console.log(item)}// foo// bar
+const s = new Set(['foo', 'bar'])
+for(const item of s){
+    console.log(item)
+}
+// foo
+// bar
 ```
 
 通过map对象的set方法来去设置一些键值，紧接着我们就可以直接使用for...of循环去遍历这个map。结果可以看到，遍历map每次的得到的还是一个数组，而且这个数组当中都是两个成员，分别就是当前被遍历的键和值，因为我们遍历的是键值结构，一般键和值在循环体中都需要用到，所以这里它是以数组的形式提供键和值，这里就可以配合数组的解构语法直接拿到数组当中的键和值，这样的话，在遍历map的时候就可以直接去使用对应的键值了，这也就是我们去遍历map和遍历数组之间的细微差异。
 
 ```js
-const m = new Map()m.set('foo', '123')m.set('bar', '345')for(const item of m){    console.log(item)}// ['foo', '123']// ['bar', '345']for(const [key, value] of m){    console.log(key, value)}// foo 123// bar 345
+const m = new Map()
+m.set('foo', '123')
+m.set('bar', '345')
+for(const item of m){
+    console.log(item)
+}
+// ['foo', '123']
+// ['bar', '345']
+for(const [key, value] of m){
+    console.log(key, value)
+}
+// foo 123
+// bar 345
 ```
 
 
@@ -754,7 +885,11 @@ const m = new Map()m.set('foo', '123')m.set('bar', '345')for(const item of m){  
 尝试用for...of去尝试遍历最普通的对象，发现它连最基本的普通对象都没法遍历，会报错。
 
 ```js
-const obj ={ foo: 123, bar: 456}for(let item of obj) {    console.log(item)}//报错 TypeError: obj is not iterable
+const obj ={ foo: 123, bar: 456}
+for(let item of obj) {
+    console.log(item)
+}
+//报错 TypeError: obj is not iterable
 ```
 
 > 对象（Object）之所以没有默认部署 Iterator 接口，是因为对象的哪个属性先遍历，哪个属性后遍历是不确定的，需要开发者手动指定。本质上，遍历器是一种线性处理，对于任何非线性的数据结构，部署遍历器接口，就等于部署一种线性转换。不过，严格地说，对象部署遍历器接口并不是很必要，因为这时对象实际上被当作 Map 结构使用，ES5 没有 Map 结构，而 ES6 原生提供了。
@@ -782,7 +917,18 @@ const obj ={ foo: 123, bar: 456}for(let item of obj) {    console.log(item)}//�
 把刚刚的尝试落实到set上，调用set对象的iterator方法，去得到这个对象的迭代器，通过迭代器的next方法去迭代set当中的数据了。
 
 ```js
-const set = new Set(['foo', 'bar', 'baz'])const iterator = set[Symbol.iterator]()console.log(iterator.next())console.log(iterator.next())console.log(iterator.next())console.log(iterator.next())console.log(iterator.next())// { value: 'foo', done: false }   // { value: 'bar', done: false }   // { value: 'baz', done: false }   // { value: undefined, done: true }// { value: undefined, done: true }
+const set = new Set(['foo', 'bar', 'baz'])
+const iterator = set[Symbol.iterator]()
+console.log(iterator.next())
+console.log(iterator.next())
+console.log(iterator.next())
+console.log(iterator.next())
+console.log(iterator.next())
+// { value: 'foo', done: false }   
+// { value: 'bar', done: false }   
+// { value: 'baz', done: false }   
+// { value: undefined, done: true }
+// { value: undefined, done: true }
 ```
 
 可见，set中的数据确实被正常遍历了，其实这也是for...of循环内部的工作原理，for...of循环内部就是按照这里的执行过程实现的遍历。其实也可以使用while循环来实现相同的遍历。
@@ -818,7 +964,23 @@ for...of可以作为遍历所有数据结构的统一方式，因为它内部就
 > ES6 规定，默认的 Iterator 接口部署在数据结构的`Symbol.iterator`属性，或者说，一个数据结构只要具有`Symbol.iterator`属性，就可以认为是“可遍历的”（iterable）。`Symbol.iterator`属性本身是一个函数，就是当前数据结构默认的遍历器生成函数。执行这个函数，就会返回一个遍历器。至于属性名`Symbol.iterator`，它是一个表达式，返回`Symbol`对象的`iterator`属性，这是一个预定义好的、类型为 Symbol 的特殊值，所以要放在方括号内。
 
 ```js
-const obj = {    //这是symbol类型提供的常量，所以需要使用计算属性名的方式定义到字面量当中。    [Symbol.iterator]: function (){        return {            next: function (){                return {                    value: 'zce',                    done: true                }            }        }    }}for(let item of obj){    console.log('循环体')}//无报错，表面实现这个可迭代接口能够被for...of直接去遍历。只是这里的循环体并没有被执行，因为我们写死了next方法返回的结果，内部第一次调用next返回结果当中的done属性的值就是true，所以说就表示我们的循环结束了，我们的循环体自然就不会再执行了。
+const obj = {
+    //这是symbol类型提供的常量，所以需要使用计算属性名的方式定义到字面量当中。
+    [Symbol.iterator]: function (){       
+        return {            
+            next: function (){  
+                return {                 
+                    value: 'zce',               
+                    done: true              
+                }           
+            }        
+        }    
+    }
+}
+for(let item of obj){   
+    console.log('循环体')
+}
+//无报错，表面实现这个可迭代接口能够被for...of直接去遍历。只是这里的循环体并没有被执行，因为我们写死了next方法返回的结果，内部第一次调用next返回结果当中的done属性的值就是true，所以说就表示我们的循环结束了，我们的循环体自然就不会再执行了。
 ```
 
 > 上面代码中，对象`obj`是可遍历的（iterable），因为具有`Symbol.iterator`属性。执行这个属性，会返回一个遍历器对象。该对象的根本特征就是具有`next`方法。每次调用`next`方法，都会返回一个代表当前成员的信息对象，具有`value`和`done`两个属性。
@@ -826,7 +988,34 @@ const obj = {    //这是symbol类型提供的常量，所以需要使用计算�
 来修改一下这个对象
 
 ```js
-const obj = {    // 添加一个数组，用于去存放一些值得被遍历的数据，然后在next方法迭代这个数组    store: ['foo', 'bar', 'baz'],         [Symbol.iterator]: function () {        //这里需要维护一个下标，默认等于0。        //由于next函数中的this并不是obj对象，所以要定义一个self去接收当前的this        let index = 0        const self = this                return {            next: function (){                const result =  {                    //在next方法中：                    value: self.store[index],                    done: index >= self.store.length                }                //让index++                index++                return result            }        }    }}for(let item of obj){    console.log('循环体')}// 循环体 foo// 循环体 bar// 循环体 baz
+const obj = {
+    // 添加一个数组，用于去存放一些值得被遍历的数据，然后在next方法迭代这个数组
+    store: ['foo', 'bar', 'baz'],
+    [Symbol.iterator]: function () {   
+        //这里需要维护一个下标，默认等于0。      
+        //由于next函数中的this并不是obj对象，所以要定义一个self去接收当前的this       
+        let index = 0
+        const self = this
+        return {
+            next: function (){
+                const result =  {
+                    //在next方法中：
+                    value: self.store[index],
+                    done: index >= self.store.length
+                }
+                //让index++
+                index++
+                return result
+            }
+        }
+    }
+}
+for(let item of obj){
+    console.log('循环体')
+}
+// 循环体 foo
+// 循环体 bar
+// 循环体 baz
 ```
 
 > ES6 的有些数据结构原生具备 Iterator 接口（比如数组），即不用任何处理，就可以被`for...of`循环遍历。原因在于，这些数据结构原生部署了`Symbol.iterator`属性（详见下文），另外一些数据结构没有（比如对象）。凡是部署了`Symbol.iterator`属性的数据结构，就称为部署了遍历器接口。调用这个接口，就会返回一个遍历器对象。
@@ -834,7 +1023,16 @@ const obj = {    // 添加一个数组，用于去存放一些值得被遍历的
 下面的例子是数组的`Symbol.iterator`属性。
 
 ```javascript
-let arr = ['a', 'b', 'c'];let iter = arr[Symbol.iterator]();iter.next() // { value: 'a', done: false }iter.next() // { value: 'b', done: false }iter.next() // { value: 'c', done: false }iter.next() // { value: undefined, done: true }
+let arr = ['a', 'b', 'c'];
+let iter = arr[Symbol.iterator]();
+iter.next()
+// { value: 'a', done: false }
+iter.next() 
+// { value: 'b', done: false }
+iter.next()
+// { value: 'c', done: false }
+iter.next()
+// { value: undefined, done: true }
 ```
 
 > 上面代码中，变量`arr`是一个数组，原生就具有遍历器接口，部署在`arr`的`Symbol.iterator`属性上面。所以，调用这个属性，就得到遍历器对象。数组原生具备`iterator`接口（即默认部署了`Symbol.iterator`属性），`for...of`循环本质上就是调用这个接口产生的遍历器。
@@ -852,7 +1050,40 @@ let arr = ['a', 'b', 'c'];let iter = arr[Symbol.iterator]();iter.next() // { val
 使用迭代器的方式实现可迭代接口。添加一个iterator方法用于去实现可迭代接口，在这个方法中去使用ES6的...操作符将内部的3个数组展开为一个新的数组，使用let关键字定义一个index变量作为索引，最后再去返回一个迭代器对象。在迭代器对象next方法中去返回此次迭代的结果，那这里的value就应该是整体数组的index，done的值就是index是否大于等于整个数组的长度，使用完index过后要让他++，否则会产生死循环。
 
 ```js
-const todos = {    life: ['吃饭', '睡觉', '上厕所'],    study: ['chinese', 'english', 'math'],    work: ['drink tea'],    // 这个函数接收外部的回调函数作为参数    each: function(callback){        // 在方法中去遍历内部所有的数据，把所有数组合并到一起。        const all = [].concat(this.life, this.study, this.work)        // 然后再去遍历他们，并且将每个数据都交个这个回调函数        for(let i of all){            callback(i)            // 这样我就相当于对外提供了一个统一遍历的接口        }    },        [Symbol.iterator]: function(){        const all = [...this.life, ...this.study, ...this.work]        let index = 0        return {            next: function(){                return{                    value: all[index],                    done: index++ >= all.length                }            }        }    }    }todos.each(function(item){    console.log(item)})for(const item of todos){    console.log(item)}// 在外部就可以使用for...of循环来统一遍历todos对象了，效果是和each方法是一样的
+const todos = {
+    life: ['吃饭', '睡觉', '上厕所'],
+    study: ['chinese', 'english', 'math'],
+    work: ['drink tea'],
+    // 这个函数接收外部的回调函数作为参数
+    each: function(callback){
+        // 在方法中去遍历内部所有的数据，把所有数组合并到一起。
+        const all = [].concat(this.life, this.study, this.work)
+        // 然后再去遍历他们，并且将每个数据都交个这个回调函数 
+        for(let i of all){ 
+            callback(i)  
+            // 这样我就相当于对外提供了一个统一遍历的接口 
+        } 
+    },
+    [Symbol.iterator]: function(){
+        const all = [...this.life, ...this.study, ...this.work]
+        let index = 0
+        return {
+            next: function(){
+                return{
+                    value: all[index],
+                    done: index++ >= all.length 
+                }
+            }
+        }
+    }
+}
+todos.each(function(item){
+    console.log(item)
+})
+for(const item of todos){
+    console.log(item)
+}
+// 在外部就可以使用for...of循环来统一遍历todos对象了，效果是和each方法是一样的
 ```
 
 这就是实现迭代器的意义，核心就是对外提供统一遍历接口，让外部不用再关心这个数据内部的结构是怎么样的。
@@ -874,7 +1105,14 @@ const todos = {    life: ['吃饭', '睡觉', '上厕所'],    study: ['chinese'
 语法及基本应用：在function关键字后面加一个*，这个函数就变成了生成器函数。因为生成器对象也实现了iterator接口，也就是遍历器接口的协议。
 
 ```js
-function * foo (){    console.log('abc')    return 100}let result = foo()console.log(result.next())// abc// {value: 100, done: true}
+function * foo (){
+    console.log('abc')
+    return 100
+}
+let result = foo()
+console.log(result.next())
+// abc
+// {value: 100, done: true}
 ```
 
 
@@ -882,7 +1120,26 @@ function * foo (){    console.log('abc')    return 100}let result = foo()console
 用yield关键字取代return 返回100，由于yield关键字并不会结束掉这个方法的执行，所以可以以此类推继续去打印全是2的字符串，然后yield一个200等，打印一下next方法的返回值。
 
 ```js
-function * foo(){    console.log('111')    yield 100    console.log('222')    yield 200    console.log('333')    yield 300}const generator = foo()console.log(generator.next())// 111// {value: 100, done: false}console.log(generator.next())// 222// {value: 200, done: false}console.log(generator.next())// 333// {value: 300, done: false}console.log(generator.next())// {value: undefined, done: true}
+function * foo(){
+    console.log('111')
+    yield 100
+    console.log('222')
+    yield 200
+    console.log('333')
+    yield 300
+}
+const generator = foo()
+console.log(generator.next())
+// 111
+// {value: 100, done: false}
+console.log(generator.next())
+// 222
+// {value: 200, done: false}
+console.log(generator.next())
+// 333
+// {value: 300, done: false}
+console.log(generator.next())
+// {value: undefined, done: true}
 ```
 
 也就是说，函数中后面的yield语句还没有执行，因为如果执行了一定会打印后面的。再调用一次next方法，此时全是1全是2的都被执行了，再次调用next，就是都打印一遍了。
@@ -896,13 +1153,41 @@ function * foo(){    console.log('111')    yield 100    console.log('222')    yi
 外部就可以通过一个方法去创建一个生成器对象，可以把这个生成器理解成发号器，每次调用一下发号器的next方法，就能拿到一个自增的ID，当然这只是一个非常简单的需求。
 
 ```js
-function * createIdMaker (){    let id = 1    while (true){        yield id++    }}const idMaker = createIdMaker()console.log(idMaker.next().value) // 1console.log(idMaker.next().value) // 2console.log(idMaker.next().value) // 3console.log(idMaker.next().value) // 4
+function * createIdMaker (){
+    let id = 1
+    while (true){
+        yield id++
+    }
+}
+const idMaker = createIdMaker()
+console.log(idMaker.next().value)
+// 1
+console.log(idMaker.next().value)
+// 2
+console.log(idMaker.next().value)
+// 3
+console.log(idMaker.next().value)
+// 4
 ```
 
 还可以使用生成器函数去实现对象的iterator方法，因为生成器也实现了iterator接口，而且使用生成器函数去实现iterator方法会比之前的方式要简单很多，这里我们在原有的案例基础上使用生成器函数，来实现iterator方法。
 
 ```js
-const todos = {    life: ['吃饭', '睡觉', '上厕所'],    study: ['chinese', 'english', 'math'],    work: ['drink tea'],        [Symbol.iterator]: function * (){        const all = [...this.life, ...this.study, ...this.work]        // 在这里我们就不用返回迭代器对象了，而是直接在iterator方法内部，直接去遍历所有的成员，然后通过yield去返回每一个被遍历到的对象就可以了        for(const item of all){            yield item        }            }}for(const item of todos){    console.log(item)}
+const todos = {
+    life: ['吃饭', '睡觉', '上厕所'],
+    study: ['chinese', 'english', 'math'],
+    work: ['drink tea'],
+    [Symbol.iterator]: function * (){
+        const all = [...this.life, ...this.study, ...this.work]
+        // 在这里我们就不用返回迭代器对象了，而是直接在iterator方法内部，直接去遍历所有的成员，然后通过yield去返回每一个被遍历到的对象就可以了
+        for(const item of all){
+            yield item 
+        }
+    }
+}
+for(const item of todos){
+    console.log(item)
+}
 ```
 
 以上是生成器函数的一些简单应用，但是它最重要的目的还是为了解决异步编程中回调嵌套过深所导致的问题，详细可见**异步编程**里构造器的介绍。
@@ -924,7 +1209,17 @@ const todos = {    life: ['吃饭', '睡觉', '上厕所'],    study: ['chinese'
 用于检查数组中是否包含指定元素，在此之前要检查数组是否存在某个指定的元素，我们就必须要使用数组对象的`indexOf`方法实现。因为这个方法可以帮我们找到元素在数组中所对应的下标，在没有找到指定元素的情况下它会返回-1，但是这种方式去判断是否存在某一个元素，也会存在一个问题，就是他不能够用于去查找数组当中的NaN。那现在有了includes方法后，我们就可以直接去判断数组中是否存在某一个指定的元素了。
 
 ```js
-const arr = ['foo', 1, NaN, false]console.log(arr.indexOf('foo')) // 0console.log(arr.indexOf('bar')) // -1console.log(arr.indexOf(NaN)) // -1console.log(arr.includes('foo')) // trueconsole.log(arr.includes(NaN)) // true
+const arr = ['foo', 1, NaN, false]
+console.log(arr.indexOf('foo'))
+// 0
+console.log(arr.indexOf('bar'))
+// -1
+console.log(arr.indexOf(NaN))
+// -1
+console.log(arr.includes('foo'))
+// true
+console.log(arr.includes(NaN))
+// true
 ```
 
 includes方法它直接就返回一个布尔值去表示存在与否，而且includes方法相对于indexOf，它还可以用来去查找NaN这样的数值。
@@ -934,7 +1229,12 @@ includes方法它直接就返回一个布尔值去表示存在与否，而且inc
 以前要进行指数运算，我们需要借助于Math对象中的power方法来去实现。在ES2016中的指数运算符就是语言本身的运算符，就像是我们之前使用的加减乘除运算符一样。
 
 ```js
-// 2的10次方，2就是底数，10就是指数console.log(Math.pow(2, 10)) //1024// ES2016console.log(2 ** 10) // 1024
+// 2的10次方，2就是底数，10就是指数
+console.log(Math.pow(2, 10))
+//1024
+// ES2016
+console.log(2 ** 10)
+// 1024
 ```
 
 这种新的运算符对于数学密集型的应用是一个很好的补充，不过我们在日常的应用开发中很少会用到指数运算。
@@ -950,7 +1250,12 @@ includes方法它直接就返回一个布尔值去表示存在与否，而且inc
 与之前ES5的Object.keys方法非常类似，但是keys方法返回的是对象当中所有键组成的一个数组。而values返回的是这个对象当中所有的值组成的数组。
 
 ```js
-const obj = {    foo: 'value1',    bar: 'value2'}console.log(Object.values(obj))// ['value1', 'value2']
+const obj = {
+    foo: 'value1',
+    bar: 'value2'
+}
+console.log(Object.values(obj))
+// ['value1', 'value2']
 ```
 
 ### 2、Object.entries（挺有用）
@@ -958,13 +1263,28 @@ const obj = {    foo: 'value1',    bar: 'value2'}console.log(Object.values(obj))
 是以数组的形式返回我们对象当中所有的键值对，使得我们可以直接使用for...of循环去遍历普通对象，就可以使用Object.entries先将这个**<u>对象</u>转换成<u>数组形式</u>的结构**，然后可以通过for...of循环去遍历他们。
 
 ```js
-const obj = {    foo: 'value1',    bar: 'value2'}console.log(Object.entries(obj)) // [ [ 'foo', 'value1' ], [ 'bar', 'value2' ] ]for(let [key, value] of Object.entries(obj)){    console.log(key, value)}// foo value1// bar value2
+const obj = {
+    foo: 'value1',
+    bar: 'value2'
+}
+console.log(Object.entries(obj))
+// [ [ 'foo', 'value1' ], [ 'bar', 'value2' ] ]
+for(let [key, value] of Object.entries(obj)){
+    console.log(key, value)
+}
+// foo value1
+// bar value2
 ```
 
 **因为map的构造函数需要的就是这种格式的数组**，所以我们就可以借助于entries方法**将一个对象去转换成一个map类型的对象**。
 
 ```js
-const obj = {    foo: 'value1',    bar: 'value2'}console.log(new Map(Object.entries(obj)))// Map(2) { 'foo' => 'value1', 'bar' => 'value2' }
+const obj = {
+    foo: 'value1',
+    bar: 'value2'
+}
+console.log(new Map(Object.entries(obj)))
+// Map(2) { 'foo' => 'value1', 'bar' => 'value2' }
 ```
 
 
