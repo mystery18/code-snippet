@@ -160,7 +160,11 @@ foo()
 那需要注意的是：如果你有多个参数的话，那带有默认值的这种形参一定要出现在参数列表的最后。因为我们的参数是按次序传递的。如果我们带有默认值的这种参数不在最后的话，那我们的默认值将无法正常工作。即：
 
 ```javascript
-function foo (bar, enable = true){    console.log('foo invoke - enable')    console.log(enable)}foo(false)
+function foo (bar, enable = true){
+    console.log('foo invoke - enable')
+    console.log(enable)
+}
+foo(false)
 ```
 
 ————————————————————————————————————————————————————————————
@@ -172,7 +176,21 @@ function foo (bar, enable = true){    console.log('foo invoke - enable')    cons
 那对于未知个数的参数，以前我们都是使用ECMAScript所提供的arguments对象去接收，那arguments对象实际上是一个伪数组。那在ES2015中新增了点点点（...）的操作符，那这种操作符有两个作用。这里我们需要用到它rest的作用，也就是剩余操作符。
 
 ```javascript
-//以前function fn(){	console.log(arguments)}//现在function foo(...args){	console.log(args)}foo(1, 2, 3, 4)// [1, 2, 3, 4]function foo(first, ...args){	console.log(args)}foo(1, 2, 3, 4)// [2, 3, 4]
+//以前
+function fn(){
+    console.log(arguments)
+}
+//现在
+function foo(...args){
+    console.log(args)
+}
+foo(1, 2, 3, 4)
+// [1, 2, 3, 4]
+function foo(first, ...args){
+    console.log(args)
+}
+foo(1, 2, 3, 4)
+// [2, 3, 4]
 ```
 
 在形参前面家加...，此时这个形参就会以数组的形式去接收从当前这个参数位置开始往后的实参。这种方式就可以取代以前通过arguments对象去接收无限参数的这种操作。
@@ -184,19 +202,29 @@ function foo (bar, enable = true){    console.log('foo invoke - enable')    cons
 ## 展开数组
 
 ```javascript
-const arr = ['foo', 'bar', 'baz']console.log(	arr[0],    arr[1],    arr[2],)// foo bar baz
+const arr = ['foo', 'bar', 'baz']
+console.log(
+    arr[0],
+    arr[1],
+    arr[2],
+)
+// foo bar baz
 ```
 
 若我们数组当中的元素个数是不固定的，那一个个传的方式就行不通了，就必须换一种方式。
 
 ```javascript
-const arr = ['foo', 'bar', 'baz']console.log.apply(console, arr)// foo bar baz
+const arr = ['foo', 'bar', 'baz']
+console.log.apply(console, arr)
+// foo bar baz
 ```
 
 而在ES2015当中，就没有必要这么麻烦了，我们可以直接去调用console对象的log方法，通过...的操作符展开我们的数组。
 
 ```javascript
-const arr = ['foo', 'bar', 'baz']console.log(...arr)console.log('foo', 'bar', 'baz')
+const arr = ['foo', 'bar', 'baz']
+console.log(...arr)
+console.log('foo', 'bar', 'baz')
 ```
 
 那...操作符就会自动把数组中的每一个成员按照次序传递到参数列表中。这样就大大简化了我们需要的操作。
@@ -206,13 +234,22 @@ const arr = ['foo', 'bar', 'baz']console.log(...arr)console.log('foo', 'bar', 'b
 ## 箭头函数
 
 ```javascript
-//function inc(num){//    return num + 1//}const inc = n => n + 1console.log(inc(100))
+//function inc(num){
+//    return num + 1
+//}
+const inc = n => n + 1
+console.log(inc(100))
 ```
 
 如：筛选出数组的奇数
 
 ```javascript
-const arr = [1, 2, 3, 4, 5, 6, 7]arr.filter(function(item){    return item * 2})//用箭头函数arr.filter(item => item % 2)
+const arr = [1, 2, 3, 4, 5, 6, 7]
+arr.filter(function(item){
+    return item * 2
+})
+//用箭头函数
+arr.filter(item => item % 2)
 ```
 
 
@@ -220,7 +257,22 @@ const arr = [1, 2, 3, 4, 5, 6, 7]arr.filter(function(item){    return item * 2})
 箭头函数this指向：在下面的方法中可以用this去获取当前对象，因为在**普通函数中，this始终会指向调用这个函数的对象**，我们把this里面的name打印出来
 
 ```javascript
-const person = {    name: 'tt',    sayHi: function(){        console.log(`hi, my name is ${this.name}`)    }}person.sayHi()//hi, my name is tomconst person = {    name: 'tt',    sayHi: ()=>{        console.log(`hi, my name is ${this.name}`)    }}person.sayHi()//undefined
+const person = {
+    name: 'tt',
+    sayHi: function(){
+        console.log(`hi, my name is ${this.name}`)
+    }
+}
+person.sayHi()
+//hi, my name is tom
+const person = {
+    name: 'tt',
+    sayHi: ()=>{
+        console.log(`hi, my name is ${this.name}`)
+    }
+}
+person.sayHi()
+//undefined
 ```
 
 因为在箭头函数中，它没有this的机制，所以它不会改变this的指向。也就是说，在我们箭头函数的外面this是什么，那我们在里面this就是什么，任何情况下都不会改变。所以↑的箭头函数外面的this是window对象，所以才会undefined。
