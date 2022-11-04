@@ -280,7 +280,30 @@ person.sayHi()
 
 
 ```javascript
-const person = {    name: 'tt',    sayHiAsync: function(){        setTimeout(function(){            console.log(this.name)        },1000)    }}person.sayHiAsync()	//undefinedconst person = {    name: 'tt',    sayHi: ()=>{        console.log(`hi, my name is ${this.name}`)    },    sayHiAsync: function(){        const _this = this        setTimeout(function(){            console.log(_this.name)        },1000)    }}person.sayHiAsync()	//tt
+const person = {
+    name: 'tt',
+    sayHiAsync: function(){
+        setTimeout(function(){
+            console.log(this.name)
+        },1000)
+    }
+}
+person.sayHiAsync()
+//undefined
+const person = {
+    name: 'tt',
+    sayHi: ()=>{
+        console.log(`hi, my name is ${this.name}`)
+    },
+    sayHiAsync: function(){
+        const _this = this
+        setTimeout(function(){
+            console.log(_this.name)
+        },1000)
+    }
+}
+person.sayHiAsync()
+//tt
 ```
 
 此时setTimeout这个函数传递进去的是一个普通函数的表达式，那在这个函数的内部就没有办法拿到我们当前作用域的this，**因为这个函数它在setTimeout里面 最终会放在全局对象上被调用**，所以说它里面是拿不到当前作用域里面的this对象，它拿到的应该是全局对象。
@@ -292,7 +315,19 @@ const person = {    name: 'tt',    sayHiAsync: function(){        setTimeout(fun
 那如果我们这里使用箭头函数的话，那就没有必要这么麻烦了。因为**在箭头函数中，this始终指向的是当前作用域里面的this**，与上面箭头函数undefined不矛盾。以后但凡代码中需要使用_this这种情况，你都可以使用箭头函数来去避免。
 
 ```javascript
-const person = {    name: 'tt',    sayHi: ()=>{        console.log(`hi, my name is ${this.name}`)    },    sayHiAsync: function(){        setTimeout(() => {            console.log(this.name)        },1000)    }}person.sayHi()//tt
+const person = {
+    name: 'tt',
+    sayHi: ()=>{
+        console.log(`hi, my name is ${this.name}`)
+    },
+    sayHiAsync: function(){
+        setTimeout(() => {
+            console.log(this.name)
+        },1000)
+    }
+}
+person.sayHi()
+//tt
 ```
 
 ————————————————————————————————————————————————————————————
@@ -302,7 +337,15 @@ const person = {    name: 'tt',    sayHi: ()=>{        console.log(`hi, my name 
 <u>**如果说我们的变量名与我们要添加到对象当中的属性名是一致的话，我们就可以省略掉冒号以及后面的变量名，这两种方式完全是等价的。**</u>
 
 ```javascript
-const bar = '345'const obj = {    foo: 123,    //传统    //bar: bar        //现在    bar}console.log(obj)
+const bar = '345'
+const obj = {
+    foo: 123,
+    //传统
+    //bar: bar
+    //现在
+    bar
+}
+console.log(obj)
 ```
 
 
@@ -310,7 +353,27 @@ const bar = '345'const obj = {    foo: 123,    //传统    //bar: bar        //�
 除此之外，我们需要为对象添加一个普通的方法，传统的做法是通过如下方式，省略了冒号和function，以下两种完全等价。
 
 ```javascript
-const bar = '345'const obj = {    foo: 123,    bar,    method1: function (){        console.log('method111')    }}console.log(obj)//等价于：const bar = '345'const obj = {    foo: 123,    bar,    method1(){        console.log('method111')        console.log(this)    }}console.log(obj)obj.method1()
+const bar = '345'
+const obj = {
+    foo: 123,
+    bar,
+    method1: function (){
+        console.log('method111')
+    }
+}
+console.log(obj)
+//等价于：
+const bar = '345'
+const obj = {
+    foo: 123,
+    bar,
+    method1(){
+        console.log('method111')
+        console.log(this)
+    }
+}
+console.log(obj)
+obj.method1()
 ```
 
 需要注意的是，这种方法的背后，实际上就是普通的function。也就是说，我们通过对象去调用这个方法，那内部的this就会指向当前对象，即obj对象。
@@ -320,13 +383,38 @@ const bar = '345'const obj = {    foo: 123,    bar,    method1: function (){    
 此外，可以使用表达式的返回值作为对象的属性名。以前我们需要为对象添加一个动态的属性名，只能在对象声明过后通过索引器的方式（方括号[]）来动态添加。
 
 ```javascript
-const bar = '345'const obj = {    foo: 123,    bar,    method1(){        console.log('method111')        console.log(this)    },}//以前只能这样：obj[Math.random()] = 123console.log(obj)obj.method1()
+const bar = '345'
+const obj = {
+    foo: 123,
+    bar,
+    method1(){
+        console.log('method111')
+        console.log(this)
+    },
+}
+//以前只能这样：
+obj[Math.random()] = 123
+console.log(obj)
+obj.method1()
 ```
 
 **而在ES2015过后，对象字面量的属性名可以直接通过方括号直接去使用动态的值，叫做计算属性名。**具体的用法如下，把我们的属性名，位置用一对方括号包起来，在这对方括号里面就可以使用任意表达式了，这个表达式的执行结果将会作为这个属性的属性名。
 
 ```javascript
-const bar = '345'const obj = {    foo: 123,    bar,    method1(){        console.log('method111')        console.log(this)    },    //现在    //[Math.random()]: 123    [bar] : 123}console.log(obj)obj.method1()
+const bar = '345'
+const obj = {
+    foo: 123,
+    bar,
+    method1(){
+        console.log('method111')
+        console.log(this)
+    },
+    //现在
+    //[Math.random()]: 123
+    [bar] : 123
+}
+console.log(obj)
+obj.method1()
 ```
 
 
@@ -342,7 +430,19 @@ const bar = '345'const obj = {    foo: 123,    bar,    method1(){        console
 Object.assign方法支持传入任意个数的对象，其中第一个参数就是目标对象，即我们所有源对象中的属性都会复制到这个对象当中，那么这个方法的返回值也就是这个目标对象。
 
 ```javascript
-const source1 = {    a: 123,    b: 123}const target = {    a: 456,    c: 456}const result = Object.assign(target, source1)console.log(target) //{a: 123, c: 456, b: 123}console.log(result == target) //true
+const source1 = {
+    a: 123,
+    b: 123
+}
+const target = {
+    a: 456,
+    c: 456
+}
+const result = Object.assign(target, source1)
+console.log(target)
+//{a: 123, c: 456, b: 123}
+console.log(result == target)
+//true
 ```
 
 由此可见Object.assign的**返回值就是第一个对象，完全相等**。
@@ -350,13 +450,37 @@ const source1 = {    a: 123,    b: 123}const target = {    a: 456,    c: 456}con
 如果我们要传入多个源对象也是一样的
 
 ```javascript
-const source1 = {    a: 123,    b: 123}const source2 = {    a: 789,    b: 789}const target = {    a: 456,    c: 456}const result = Object.assign(target, source1, source2)console.log(target) //{a: 789, c: 456, b: 789}console.log(result == target) //true
+const source1 = {
+    a: 123,
+    b: 123
+}
+const source2 = {
+    a: 789,
+    b: 789
+}
+const target = {
+    a: 456,
+    c: 456
+}
+const result = Object.assign(target, source1, source2)
+console.log(target)
+//{a: 789, c: 456, b: 789}
+console.log(result == target)
+//true
 ```
 
 这个方法很常用，通常用这个方法去复制一个对象。如果我们在这个函数内部直接修改了这个对象参数的属性，那外界所对应的这个对象也同时会发生变化，因为他们应该指向同一个内存地址，也就是同一个数据。
 
 ```javascript
-function func(obj){    obj.name = 'func obj',    console.log(obj)}const obj = { name: 'global obj' }func(obj)console.log(obj)// {name : 'func obj' }// {name : 'func obj' }
+function func(obj){
+    obj.name = 'func obj'
+    console.log(obj)
+}
+const obj = { name: 'global obj' }
+func(obj)
+console.log(obj)
+// {name : 'func obj' }
+// {name : 'func obj' }
 ```
 
 
@@ -364,7 +488,16 @@ function func(obj){    obj.name = 'func obj',    console.log(obj)}const obj = { 
 **那如果我们只是希望在这个函数的内部去修改这个对象，那我们就可以使用Object.assign()方法去把这个对象复制到一个全新的空对象上面，那这样的话我们内部的对象就是全新的对象，它的修改也就不会去影响到外部的数据了。**
 
 ```javascript
-function func(obj){    const funObj = Object.assign({}, obj)    funObj.name = 'func obj',    console.log(funObj)}const obj = { name: 'global obj' }func(obj)console.log(obj)// {name : 'func obj' }// {name : 'global obj' }
+function func(obj){
+    const funObj = Object.assign({}, obj)
+    funObj.name = 'func obj'
+    console.log(funObj)
+}
+const obj = { name: 'global obj' }
+func(obj)
+console.log(obj)
+// {name : 'func obj' }
+// {name : 'global obj' }
 ```
 
 除此以外呢，Object.assign()用来为options对象参数去设置默认值
@@ -380,7 +513,10 @@ function func(obj){    const funObj = Object.assign({}, obj)    funObj.name = 'f
 但===也有两种特殊情况，首先就是对于数字0它的正负是没有办法区分的，也就是说在我们用===去比较+0和-0返回的结果是true，虽然说在我们应用开发来讲这种问题其实不需要关心，只有在我们去处理一些特殊的数学问题时才会有这种情况出现。其次是对于NaN，两个NaN === NaN 返回的是false，以前是任务NaN是一个非数字，也就是说有无限种可能，所以两个NaN是不相等的，但在今天看来NaN就是一个特别的值，所以说两个NaN它应该是完全相等的。所以在ES2015中就提出了一种新的同值比较的算法，即用Object.is()方法来解决这个问题，通过这个方法+0和-0就可以被区分开，而且NaN也是等于NaN。不过一般情况下，我们根本不会用到这个方法，大多数时候我们建议大家还是使用严格相等运算符===。
 
 ```javascript
-console.log(Object.is(+0, -0)) // falseconsole.log(Object.is(NaN, NaN)) // true	
+console.log(Object.is(+0, -0))
+// false
+console.log(Object.is(NaN, NaN))
+// true	
 ```
 
 ————————————————————————————————————————————————————————————
@@ -429,7 +565,9 @@ const personProxy = new Proxy(person, {
     set (){}
 })
 console.log(personProxy.name)
-console.log(personProxy.xxx)// zce// default
+console.log(personProxy.xxx)
+// zce
+// default
 ```
 
 
@@ -538,7 +676,21 @@ console.log(person)
 第二点优势：Proxy更好的**支持数组对象**的监视
 
 ```js
-const list = []const listProxy = new Proxy(list, {    //在处理对象上添加set方法用于监视数据的写入    set(target, prop, val){        //打印下数据的属性名和属性值        console.log('set', prop, value)                //设置一下目标对象中对应的属性        target[prop] = val        return true //表示写入成功    }})listProxy.push(100)//set 0 100   --> 0是数组的下标，100是0下标所对应的值//set length 1
+const list = []
+const listProxy = new Proxy(list, {
+    //在处理对象上添加set方法用于监视数据的写入
+    set(target, prop, val){
+        //打印下数据的属性名和属性值
+        console.log('set', prop, value)
+        //设置一下目标对象中对应的属性
+        target[prop] = val
+        return true
+        //表示写入成功
+    }
+})
+listProxy.push(100)
+//set 0 100   --> 0是数组的下标，100是0下标所对应的值
+//set length 1
 ```
 
 还有很多优势。
@@ -554,7 +706,19 @@ const list = []const listProxy = new Proxy(list, {    //在处理对象上添加
 Reflect内部封装了一系列对对象的底层操作，具体有13个静态方法。里面的方法名和proxy对象中的处理对象成员是完全一致的，其实就是Proxy处理对象的默认实现。
 
 ```javascript
-const obj = {    foo: '123',    bar: '456' }const proxy = new Proxy(obj, {    get (target, prop){        console.log('watch logic')                return Reflect.get(target, prop)    }})console.log(proxy.foo)//watch logic//123
+const obj = {
+    foo: '123',
+    bar: '456'
+}
+const proxy = new Proxy(obj, {
+    get (target, prop){
+        console.log('watch logic')
+        return Reflect.get(target, prop)
+    }
+})
+console.log(proxy.foo)
+//watch logic
+//123
 ```
 
 如果没有去添加处理器对象的方法（如get、set），那么内部的get和set的执行是：proxy处理对象内部默认实现的逻辑就是调用了reflect对象当中所对应的方法，也就是说如果没有定义get方法 就等同于定义了一个get方法，然后在内部将参数原封不动交给Reflect.get方法，结果是一样的，如上。
@@ -564,13 +728,31 @@ const obj = {    foo: '123',    bar: '456' }const proxy = new Proxy(obj, {    ge
 **<u>Reflect对象最大的意义就是（提供了一套统一的用于操作对象的API）</u>**，在这之前我们去操作对象时，有可能时会有Object对象上的一些方法，也有可能使用的是像delete或in这样的操作符，这些对于新手来说太乱了，没有什么规律。那Reflect对象很好解决了这个问题，它统一了对象的操作方式。通过几个简单的例子看一下：
 
 ```js
-const obj = {    name: 'zce',    age: 18}//传统方式要去判断对象当中是否存在某个属性，就需要用到 “属性名” in 对象（也可以用hasOwnProperty,但是这个只能判断是否是属于自身的属性，无法找到原型身上的属性。hasOwnProperty()只在属性存在于实例中时才返回true）判断自身属性是否存在！！！console.log('name' in obj)//删除name属性，用到deleteconsole.log(delete obj['age'])//如果要获取对象中所有的属性名，又需要去使用Object.keys方法console.log(Object.keys(obj))//true//true//['name', 'age']
+const obj = {
+    name: 'zce',
+    age: 18
+}
+//传统方式要去判断对象当中是否存在某个属性，就需要用到 “属性名” in 对象（也可以用hasOwnProperty,但是这个只能判断是否是属于自身的属性，无法找到原型身上的属性。hasOwnProperty()只在属性存在于实例中时才返回true）判断自身属性是否存在！！！
+console.log('name' in obj)
+//删除name属性，用到delete
+console.log(delete obj['age'])
+//如果要获取对象中所有的属性名，又需要去使用Object.keys方法
+console.log(Object.keys(obj))
+//true
+//true
+//['name', 'age']
 ```
 
 由此可见，同样都是去操作这个对象，一会要用操作符，一会又要用到某个对象中的方法。换作现在，reflect对象就提供了一个统一的方式：
 
 ```js
-const obj = {    name: 'zce',    age: 18}console.log(Reflect.has(obj, 'name'))console.log(Reflect.deleteProperty(obj, 'age'))console.log(Reflect.ownKeys(obj))
+const obj = {
+    name: 'zce',
+    age: 18
+}
+console.log(Reflect.has(obj, 'name'))
+console.log(Reflect.deleteProperty(obj, 'age'))
+console.log(Reflect.ownKeys(obj))
 ```
 
 - 判断对象是否存在某一个属性，使用Reflect.has方法。
@@ -592,7 +774,12 @@ Promise是ES2015中提供的一个内置对象，它提供了一种全新的异�
 在此之前，ECMAScript中都是通过定义函数以及函数的原型对象来去实现类型。比如要定义一个Person的类型，首先要定义一个Person函数，作为这个类型的构造函数，在构造函数中我们可以通过this去访问当前的实例对象，如果我们需要在这个类型所有的实例之间去共享一些成员，可以借助函数对象的prototype 也就是通过原型去实现。
 
 ```js
-function Person(name){    this.name = name}Person.prototype.say = function(){    console.log(`hi, my name is ${this.name}`)}
+function Person(name){
+    this.name = name
+}
+Person.prototype.say = function(){
+    console.log(`hi, my name is ${this.name}`)
+}
 ```
 
 那自从ES6开始，我们就可以使用一个class关键字来去声明一个类型，这种独立定义类型的语法相比较之前函数的方式，要更容易理解，结构也更加清晰一些。来通过class去复现一下这个Person类型：
@@ -600,7 +787,9 @@ function Person(name){    this.name = name}Person.prototype.say = function(){   
 如果需要在构造函数中做一些额外的逻辑，可以在里面添加一个叫做constructor的方法，这个方法就是当前这个类型的构造函数，同样可以在这个构造函数中使用this访问当前类型的实例对象。如果想要为这个类型去定义一些实例方法，只需要在这个类型里面添加对应的方法成员就可以了。完成以后同样可以用new关键词去创建这个person类型的实例，然后去调用实例里面提供的say方法。
 
 ```javascript
-//用class来写：class Person {    constructor (name){        this.name = name    }    say(){        console.log(`hi, my name is ${this.name}`)    }}const p = new Person('tom')p.say()// hi, my name is tom
+//用class来写：
+class Person {
+    constructor (name){        this.name = name    }    say(){        console.log(`hi, my name is ${this.name}`)    }}const p = new Person('tom')p.say()// hi, my name is tom
 ```
 
 
