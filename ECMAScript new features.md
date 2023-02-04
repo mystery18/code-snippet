@@ -797,7 +797,20 @@ class Person {
 在类型中的方法，一般分为实例方法和静态方法。实例方法就是需要这个类型构造的实例对象去调用，而静态方法则是直接通过类型本身去调用。以前实现静态方法是直接在构造函数对象上来挂载方法来实现，因为在js中函数也是对象，它也可以去添加一些方法成员。而在ES6中就多了一个专门用来去甜添加静态方法的关键词家static
 
 ```js
-class Person {    constructor (name){        this.name = name    }    say(){        console.log(`hi, my name is ${this.name}`)    }        static create (name){        return new Person (name)    }}//调用静态方法就是直接通过类型.方法名 去使用const tom = Person.create('tom')tom.say()
+class Person {
+    constructor (name){
+        this.name = name
+    }
+    say(){
+        console.log(`hi, my name is ${this.name}`)
+    }
+    static create (name){
+        return new Person (name)
+    }
+}
+//调用静态方法就是直接通过类型.方法名 去使用
+const tom = Person.create('tom')
+tom.say()
 ```
 
 这里需要注意的是，因为我们的静态方法是挂载到类型上面的，所以在静态方法内部它的this就不会去指向某一个实例对象，而是当前的类型。
@@ -809,7 +822,26 @@ class Person {    constructor (name){        this.name = name    }    say(){    
 通过继承这种特性，我们就能够抽象出来相似相似类型之间重复的地方。在ES6之前大多数情况我们都会使用原型的方式去实现继承，而在ES6中，它实现了一个专门用于类型继承的关键词叫 extends 。
 
 ```js
-class Person {    constructor (name){        this.name = name    }    say(){        console.log(`hi, my name is ${this.name}`)    }}class Student extends Person {    constructor (name, number){        super(name)        this.number = number    }    hello (){        super.say()        console.log(`my school number is ${this.number}`)    }    }const s = new Student('Jack', '100')s.hello()
+class Person {
+    constructor (name){
+        this.name = name
+    }
+    say(){
+        console.log(`hi, my name is ${this.name}`)
+    }
+}
+class Student extends Person {
+    constructor (name, number){
+        super(name)
+        this.number = number
+    }
+    hello (){
+        super.say()
+        console.log(`my school number is ${this.number}`)
+    }
+}
+const s = new Student('Jack', '100')
+s.hello()
 ```
 
 Student类型就会拥有Person类型的所有成员了，在Student类型中我们接收两个参数，name在父类参数也需要用到，所以这里我们需要用到`super`对象，这个对象始终指向父类，调用它就是调用了父类的构造函数。然后可以定义这个类型特有的成员，那在hello方法中同样可以使用super对象去访问父类成员，如调用父类里面的say方法。
@@ -1039,7 +1071,10 @@ console.log(obj.toString())
 在我们对象中添加一个Symbol.toStringTag属性，让他等于XObject，此时toString标签就是我们自定义的Xobject。这里的toStringTag就是Symbol内置的常量，这种symbol后面为对象去实现迭代器时会经常用到。
 
 ```js
-const obj = {    [Symbol.toStringTag]: 'XObject'}console.log(obj.toString()) //[object XObject]
+const obj = {
+    [Symbol.toStringTag]: 'XObject'
+}
+console.log(obj.toString()) //[object XObject]
 ```
 
 
@@ -1047,7 +1082,17 @@ const obj = {    [Symbol.toStringTag]: 'XObject'}console.log(obj.toString()) //[
 我们使用Symbol值去作为对象的属性名，这个属性通过传统的for in循环是无法拿到的，而且我们通过Object.keys也是获取不到Symbol类型的属性名。如果我们通过JSON.stringify去序列化我们的对象为JSON字符串的话，那Symbol属性也会被忽略掉。总之这些特性都使得symbol类型的属性特别适合对象的私有属性。要获取这种类型的属性名：可以使用**Object.getOwnPropertySymbols**方法，这个方法的作用类似于Object.keys方法，所不同的是Object.keys方法只能获取对象中所有的字符串属性名，而它获取到的全是symbol类型的属性名。
 
 ```js
-const obj = {    [Symbol()]: 'symbol value',    foo: 'normal value'}for (var key in obj){    console.log(key) // foo}console.log(Object.keys(obj))// ['foo']console.log(JSON.stringify(obj))//{"foo": "normal value"}console.log(Object.getOwnPropertySymbols(obj))// [ Symbol() ]
+const obj = {
+    [Symbol()]: 'symbol value',
+    foo: 'normal value'
+}
+for (var key in obj){
+    console.log(key) // foo
+}
+console.log(Object.keys(obj))
+// ['foo']
+console.log(JSON.stringify(obj)) // {"foo": "normal value"}
+console.log(Object.getOwnPropertySymbols(obj)) // [ Symbol() ]
 ```
 
 ------
@@ -1533,13 +1578,36 @@ console.log(new Map(Object.entries(obj)))
 有一个叫`getOwnPropertyDescriptors`的方法，这个方法实际上是用来去帮我们获取对象当中属性的完整描述信息，自从ES5过后就可以为对象去定义getter和setter属性，这种getter和setter属性不能够直接通过Object.assign方法去完全复制的。这是因为Object.assign在复制时把fullName当做一个普通属性去复制，所以说才会出现这种情况。
 
 ```js
-const p1 = {	firstName: 'Lei',	lastName: 'Wang',	get fullName (){		return this.firstName + ' ' + this.lastName	}	// 这里定义的是getter属性，返回值就是属性值，这样就相当于为外界提供了一个只读属性}console.log(p1.fullName) // Lei Wang//复制一个对象出来const p2 = Object.assign({}, p1)p2.firstName = 'zce'console.log(p2.fullName) // Lei Wang（按道理应该输出的是zce）
+const p1 = {
+    firstName: 'Lei',
+    lastName: 'Wang',
+    get fullName (){
+        return this.firstName + ' ' + this.lastName
+    }
+    // 这里定义的是getter属性，返回值就是属性值，这样就相当于为外界提供了一个只读属性
+}
+console.log(p1.fullName) // Lei Wang
+//复制一个对象出来
+const p2 = Object.assign({}, p1)
+p2.firstName = 'zce'console.log(p2.fullName)
+// Lei Wang（按道理应该输出的是zce）
 ```
 
 这种情况下我们就可以使用`Obeject.getOwnPropertyDescriptors`方法去获取我们对象当中属性完整描述信息，再使用Obejct.defineProperties方法去将描述信息定义到一个新的对象中，这样的话我们对于getter和setter类型的属性就可以做到复制了。此时p2对象再修改掉它的firstName，那它的fullName也会跟着一起改，那这就是`getOwnPropertyDescriptors`的意义，它主要就是配合ES5所新增的getter和setter去使用。
 
 ```js
-const p1 = {	firstName: 'Lei',	lastName: 'Wang',	get fullName (){		return this.firstName + ' ' + this.lastName	}}const descriptors = Object.getOwnPropertyDescriptors(p1)//console.log(descriptors)//输出一个对象，该对象包含3个对象first、last、fullconst p2 = Object.defineProperties({}, descriptors)p2.firstName = 'zce'console.log(p2.fullName) // zce Wang
+const p1 = {
+    firstName: 'Lei',
+    lastName: 'Wang',
+    get fullName (){
+        return this.firstName + ' ' + this.lastName
+    }
+}
+const descriptors = Object.getOwnPropertyDescriptors(p1)
+//console.log(descriptors)
+//输出一个对象，该对象包含3个对象first、last、full
+const p2 = Object.defineProperties({}, descriptors)
+p2.firstName = 'zce'console.log(p2.fullName) // zce Wang
 ```
 
 
@@ -1551,7 +1619,25 @@ const p1 = {	firstName: 'Lei',	lastName: 'Wang',	get fullName (){		return this.f
 如果我们直接遍历输出这些数据，那控制台显示就会非常乱。更适合的方式就是使用字符串的pad方法去将我们输出的这些文本做一个对齐。这两个方法的效果用给定的字符串去填充目标字符串的开始或结束位置，直到字符串拿到指定长度位置。
 
 ```js
-const books = {    html: 5,    css: 16,    javascript: 128}for(let [name, count] of Object.entries(books)){    console.log(name, count)}// html 5// css 16// javascript 128for(let [name, count] of Object.entries(books)){    //通过padEnd去固定为16个字符长度 对于空白的位置使用-去填充，用|去分割    //count是数字，用toString转换成字符串，然后调用padStart方法为前面添加导0，这个数字保留3位长度    console.log(`${name.padEnd(16, '-')}|${count.toString().padStart(3, '0')}`)}// html------------|005// css-------------|016// javascript------|128
+const books = {
+    html: 5,
+    css: 16,
+    javascript: 128
+}
+for(let [name, count] of Object.entries(books)){
+    console.log(name, count)
+}
+// html 5
+// css 16
+// javascript 128
+for(let [name, count] of Object.entries(books)){
+    //通过padEnd去固定为16个字符长度 对于空白的位置使用-去填充，用|去分割
+    //count是数字，用toString转换成字符串，然后调用padStart方法为前面添加导0，这个数字保留3位长度
+    console.log(`${name.padEnd(16, '-')}|${count.toString().padStart(3, '0')}`)
+}
+// html------------|005
+// css-------------|016
+// javascript------|128
 ```
 
 ### 4、函数的参数中添加尾逗号
@@ -1559,7 +1645,12 @@ const books = {    html: 5,    css: 16,    javascript: 128}for(let [name, count]
 ES2017还有一个非常小的变化，它允许函数的参数列表最后一位去添加一个结束的尾逗号，这是一个非常小的变化，原因也很简单。在我们定义数组或定义对象的时候，最后一个元素后面都会添加一个逗号，这里的原因也是一样的。
 
 ```js
-const arr = [    100,    200,    300,        400,]
+const arr = [
+    100,
+    200,
+    300,
+    400,
+]
 ```
 
 好处：1、想手动调整顺序就很方便（Alt+↑/↓）；2、如果修改了数组中元素的个数，如添加了新的元素，此时只需要再去新建一行，因为如果原来最后一行没逗号，你就得在原来的最后一行去加逗号，对于源代码就得修改两行，所以允许加尾逗号（只是小变化，不影响任何实际功能层面的东西）。
