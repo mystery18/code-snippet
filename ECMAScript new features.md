@@ -789,7 +789,15 @@ Person.prototype.say = function(){
 ```javascript
 //用class来写：
 class Person {
-    constructor (name){        this.name = name    }    say(){        console.log(`hi, my name is ${this.name}`)    }}const p = new Person('tom')p.say()// hi, my name is tom
+    constructor (name){
+        this.name = name
+    }
+    say(){
+        console.log(`hi, my name is ${this.name}`)
+    }
+}
+const p = new Person('tom')
+p.say() // hi, my name is tom
 ```
 
 
